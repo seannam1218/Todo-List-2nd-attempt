@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Todo List Project</title>
+	<meta charset="utf-8">
+	
+	<style>
+	body {
+	background-color: #FAECA9
+	}
+	
+	.topBar {
+		font-family: sans-serif;
+		font-size: 1em;
+		text-align: center;
+		color: white;
+		position: fixed;
+		top:-3%;
+		left:0%;
+		z-parentListIndex: 100;
+		width: 100%;
+		height: 10%;
+		background-color: #8E2EC2;
+	}
+	.list {
+		font-family: sans-serif;
+		font-size: 1.5em;
+		top: 5%;
+		margin-left: 10%;
+		margin-right: 20%;
+		margin-top: 5%;
+	
+	}
+	.accessories {
+		text-align: center;
+	}
+	.dialog {
+		color: blue;
+		text-align: center;
+	}
+	
+	</style>
+	
+</head>
+
+
+<body>
+	<div class= topBar>
+		<h1>Sean's Todo List</h1> 
+	</div>
+	
+	<div class= list>
+	</div>
+	
+	<div class= accessories>
+		<div class = formSpace></div>
+		<button class= deleteAll>delete all</button>
+		<button class= saveAll>save work</button>
+	</div>
+
+	<br>
+	
+	<div class= dialog></div>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>	
+	
+		var bullet = "- ";
+		var button = $("<button>").attr("type", "submit").text("submit");
+		var input = $("<input>").attr("type", "string");
+		var label = $("<label>").append("Add an item <br>").append(this.input);	
+		
+		var icon = function(alt, src, width, opacity, parentListIndex) {
+			this.alt = alt;
+			this.src = src;
+			this.width = width;
+			this.opacity = opacity;
+			this.parentListIndex = parentListIndex;
+		}
+
+		var $deleteIcon = $("<img>")
+			//.attr("class", String("deleteButton" + i))
+			.attr("src", "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png")
+			.attr("alt", "delete item")
+			.attr("width", "30px") 
+			.on("click", function(event) {
+				event.preventDefault();
+				console.log("clicked delete icon");
+				console.log(event);
+				var $target = $(event.currentTarget).closest("p");
+				removeItem($target);
+				}
+			);
+		
+		var removeItem = function (target) {
+			target.remove();
+			//items.splice(targetNum);
+		}
+		
+		//LOAD DATA// make items array corresponding to what is stored in localStorage
+		var savedData = JSON.parse(localStorage.getItem("items"));
+		
+		
+		if (!savedData) {
+			var items = [];
+			console.log("no data")
+		} else {
+			var items = savedData;
+			console.log("loaded following items: " + items);
+			for (var i = 0; i < savedData.length; i++) {
+					var $p = $("<p>") //.attr("class", String("item" + i));
+					var $answerP = $p.append(items[i]).append($("<br>"))
+						/*.on("click", function(event) {
+							console.log(event);
+							var $targetClass = $(event.currentTarget).closest("p");
+							console.log($targetClass);
+							//removeItem();
+							}
+						);*/
+					$(".list").append($answerP);
+				}
+		}
+		
+		var $mainForm = $("<form>").attr("class", "mainForm").append(label).append(button).attr("input", input)
+				.on("submit", function(event) {
+					event.preventDefault();
+					console.log("form submitted");
+					
+					var inputAnswer = $(this).find("input").val();
+					
+					if (items === null) {
+						var $p = $("<p>") //.attr("class", String("item0"));
+						console.log("0");
+					} else {
+						var $p = $("<p>") //.attr("class", String("item" + items.length));
+						console.log(items.length);
+					}
+					
+					var $answerP = $p.append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
+					$(".list").append($answerP);
+					}
+				)
+		
+		$(".saveAll").on("click", function(event) {
+			event.preventDefault();
+			items = [];
+			$("p").each(function(index, element) {   //JQuery looping technique
+				var text = $(element).text();
+				items.push(text);
+				}
+			);
+			localStorage.setItem("items", JSON.stringify(items));
+			console.log("saved work");
+			}
+		);
+		
+		$(".deleteAll").on("click", function(event) {
+				event.preventDefault();
+				//dialog pop-up
+				if ($(".dialog").text() === "") {
+					var yesButton = $("<button>").attr("type", "submit").text("hell yeah")
+						.on("click", function(event) {
+							items = [];
+							$(".list").html("");
+							$(".dialog").html("");
+							console.log("deleted all work");
+							}
+						)
+						
+					var noButton = $("<button>").attr("type", "submit").text("nah")
+						.on("click", function(event) {
+							$(".dialog").html("");
+							return;
+							}
+						)
+					
+					$(".dialog").append("Are you sure you want to delete everything?").append("<br>").append(yesButton).append(noButton);
+				}
+			}
+		)
+	
+	
+		//MAIN CODE//
+	
+		$mainForm.appendTo($(".formSpace"));
+	</script>
+</body>
