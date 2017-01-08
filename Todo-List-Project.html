@@ -85,10 +85,8 @@
 		
 		if (!savedData) {
 			var items = [];
-			console.log("no data found")
 		} else {
 			var items = savedData;
-			console.log("loaded following items: " + items);
 			for (var i = 0; i < savedData.length; i++) {
 					var $p = $("<p>")
 					var deleteIcon = new icon("https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png");
@@ -109,10 +107,7 @@
 						)
 						.on("click", function(event) {
 							event.preventDefault();
-							console.log("clicked delete icon");
-							console.log(event);
 							var $target = $(event.currentTarget).closest("p");
-							console.log($target);
 							$target.remove();
 							}
 						)
@@ -124,45 +119,41 @@
 		var $mainForm = $("<form>").attr("class", "mainForm").append(label).append(button).attr("input", input)
 				.on("submit", function(event) {
 					event.preventDefault();
-					console.log("form submitted");
-					
+					$(".dialog").text("");
 					var inputAnswer = $(this).find("input").val();
-					var deleteIcon = new icon("https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png");
-					var $deleteIcon = $("<img>")
-						.attr("src", deleteIcon.src)
-						.attr("alt", deleteIcon.alt)
-						.attr("width", deleteIcon.width) 
-						.attr("style", String("opacity: " + deleteIcon.initialOpacity))
-						.on("mouseenter", function(event) {
-							event.preventDefault();
-							this.style.opacity = 1;
-							}
-						)
-						.on("mouseout", function(event) {
-							event.preventDefault();
-							this.style.opacity = deleteIcon.initialOpacity;
-							}
-						)
-						.on("click", function(event) {
-							event.preventDefault();
-							console.log("clicked delete icon");
-							console.log(event);
-							var $target = $(event.currentTarget).closest("p");
-							console.log($target);
-							$target.remove();
-							}
-						)
-					
-					if (items === null) {
-						var $p = $("<p>")
-						console.log("0");
-					} else {
-						var $p = $("<p>")
-						console.log(items.length);
+					if (inputAnswer !== "") {
+						var deleteIcon = new icon("https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png");
+						var $deleteIcon = $("<img>")
+							.attr("src", deleteIcon.src)
+							.attr("alt", deleteIcon.alt)
+							.attr("width", deleteIcon.width) 
+							.attr("style", String("opacity: " + deleteIcon.initialOpacity))
+							.on("mouseenter", function(event) {
+								event.preventDefault();
+								this.style.opacity = 1;
+								}
+							)
+							.on("mouseout", function(event) {
+								event.preventDefault();
+								this.style.opacity = deleteIcon.initialOpacity;
+								}
+							)
+							.on("click", function(event) {
+								event.preventDefault();
+								var $target = $(event.currentTarget).closest("p");
+								$target.remove();
+								}
+							)
+						
+						if (items === null) {
+							var $p = $("<p>")
+						} else {
+							var $p = $("<p>")
+						}	
+						
+						var $answerP = $p.append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
+						$(".list").append($answerP);
 					}
-					
-					var $answerP = $p.append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
-					$(".list").append($answerP);
 					}
 				)
 		
@@ -175,7 +166,6 @@
 				}
 			);
 			localStorage.setItem("items", JSON.stringify(items));
-			console.log("saved work");
 			}
 		);
 		
@@ -188,7 +178,6 @@
 							items = [];
 							$(".list").html("");
 							$(".dialog").html("");
-							console.log("deleted all work");
 							}
 						)
 						
