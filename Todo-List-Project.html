@@ -27,7 +27,7 @@
 		font-family: sans-serif;
 		font-size: 1.5em;
 		top: 5%;
-		margin-left: 10%;
+		margin-left: 20%;
 		margin-right: 20%;
 		margin-top: 5%;
 	
@@ -65,59 +65,58 @@
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>	
-	
+		
+		//DEFINITIONS
 		var bullet = "- ";
+		
 		var button = $("<button>").attr("type", "submit").text("submit");
 		var input = $("<input>").attr("type", "string");
 		var label = $("<label>").append("Add an item <br>").append(this.input);	
 		
-		var icon = function(alt, src, width, opacity, parentListIndex) {
-			this.alt = alt;
+		var icon = function(src) {
+			this.alt = "delete item";
 			this.src = src;
-			this.width = width;
-			this.opacity = opacity;
-			this.parentListIndex = parentListIndex;
-		}
-
-		var $deleteIcon = $("<img>")
-			//.attr("class", String("deleteButton" + i))
-			.attr("src", "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png")
-			.attr("alt", "delete item")
-			.attr("width", "30px") 
-			.on("click", function(event) {
-				event.preventDefault();
-				console.log("clicked delete icon");
-				console.log(event);
-				var $target = $(event.currentTarget).closest("p");
-				removeItem($target);
-				}
-			);
-		
-		var removeItem = function (target) {
-			target.remove();
-			//items.splice(targetNum);
+			this.width = "30px";
+			this.initialOpacity = 0.1;
 		}
 		
 		//LOAD DATA// make items array corresponding to what is stored in localStorage
 		var savedData = JSON.parse(localStorage.getItem("items"));
 		
-		
 		if (!savedData) {
 			var items = [];
-			console.log("no data")
+			console.log("no data found")
 		} else {
 			var items = savedData;
 			console.log("loaded following items: " + items);
 			for (var i = 0; i < savedData.length; i++) {
-					var $p = $("<p>") //.attr("class", String("item" + i));
-					var $answerP = $p.append(items[i]).append($("<br>"))
-						/*.on("click", function(event) {
-							console.log(event);
-							var $targetClass = $(event.currentTarget).closest("p");
-							console.log($targetClass);
-							//removeItem();
+					var $p = $("<p>")
+					var deleteIcon = new icon("https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png");
+					var $deleteIcon = $("<img>")
+						.attr("src", deleteIcon.src)
+						.attr("alt", deleteIcon.alt)
+						.attr("width", deleteIcon.width) 
+						.attr("style", String("opacity: " + deleteIcon.initialOpacity))
+						.on("mouseenter", function(event) {
+							event.preventDefault();
+							this.style.opacity = 1;
 							}
-						);*/
+						)
+						.on("mouseout", function(event) {
+							event.preventDefault();
+							this.style.opacity = deleteIcon.initialOpacity;
+							}
+						)
+						.on("click", function(event) {
+							event.preventDefault();
+							console.log("clicked delete icon");
+							console.log(event);
+							var $target = $(event.currentTarget).closest("p");
+							console.log($target);
+							$target.remove();
+							}
+						)
+					var $answerP = $p.append(items[i]).append($deleteIcon).append($("<br>"))
 					$(".list").append($answerP);
 				}
 		}
@@ -128,12 +127,37 @@
 					console.log("form submitted");
 					
 					var inputAnswer = $(this).find("input").val();
+					var deleteIcon = new icon("https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png");
+					var $deleteIcon = $("<img>")
+						.attr("src", deleteIcon.src)
+						.attr("alt", deleteIcon.alt)
+						.attr("width", deleteIcon.width) 
+						.attr("style", String("opacity: " + deleteIcon.initialOpacity))
+						.on("mouseenter", function(event) {
+							event.preventDefault();
+							this.style.opacity = 1;
+							}
+						)
+						.on("mouseout", function(event) {
+							event.preventDefault();
+							this.style.opacity = deleteIcon.initialOpacity;
+							}
+						)
+						.on("click", function(event) {
+							event.preventDefault();
+							console.log("clicked delete icon");
+							console.log(event);
+							var $target = $(event.currentTarget).closest("p");
+							console.log($target);
+							$target.remove();
+							}
+						)
 					
 					if (items === null) {
-						var $p = $("<p>") //.attr("class", String("item0"));
+						var $p = $("<p>")
 						console.log("0");
 					} else {
-						var $p = $("<p>") //.attr("class", String("item" + items.length));
+						var $p = $("<p>")
 						console.log(items.length);
 					}
 					
@@ -179,10 +203,9 @@
 				}
 			}
 		)
-	
-	
+		
 		//MAIN CODE//
-	
 		$mainForm.appendTo($(".formSpace"));
+		
 	</script>
 </body>
